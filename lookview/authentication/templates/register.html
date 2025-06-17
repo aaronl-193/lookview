@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register ReelView</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link rel="stylesheet" href="{% static 'auth.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body class="page-auth">
+    <div class="container">
+        <div class="left-section">
+            <img src="{% static 'bg-auth-register.png' %}" class="image-overlay" alt="Overlay">
+            <div class="left-section-wrap">
+                <div class="social">
+                    <a href="#" class="social-link">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
+                <button class="contact-btn">Contact Us</button>
+                <div class="welcome-text">
+                    <h1 class="welcome-title">Selamat Datang di Reelview!</h1>
+                    <p class="welcome-paragraph">
+                        Masuk ke akunmu dan biarkan Reelview membantu memilih film terbaik berdasarkan genre favorit, rating, dan review pengguna lainnya. Nonton jadi lebih mudah dan menyenangkan!
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="logo">
+                <img src="{% static 'logo.png' %}" alt="ReelView Logo" />
+            </div>
+            <h2 class="form-title">Daftar Sekarang</h2>
+            <form class="form" method="post" action="{% url 'signup' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label" for="username">Nama Pengguna<span>*</span></label>
+                    <input class="form-control" type="text" id="username" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Email/no telepon<span>*</span></label>
+                    <input class="form-control" type="text" id="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password<span>*</span></label>
+                    <div class="password-wrapper">
+                        <input class="form-control" type="password" id="password" name="password" placeholder="Password" required>
+                        <span class="password-lock"><i class="fa fa-lock"></i></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="confirm-password">Konfirmasi Password<span>*</span></label>
+                    <div class="password-wrapper">
+                        <input class="form-control" type="password" id="confirm-password" name="confirm-password" placeholder="Password" required>
+                        <span class="password-lock"><i class="fa fa-lock"></i></span>
+                    </div>
+                </div>
+                <button type="button" class="btn">
+                    <i class="fab fa-google"></i> Daftar dengan Google
+                </button>
+                <button type="submit" class="btn btn-primary">Register Sekarang</button>
+            </form>
+            <p class="form-text">
+                Already Have account? <a href="{% url 'login' %}" class="form-label form-label-secondary">Login</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

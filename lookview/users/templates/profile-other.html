@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - ReelView</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container container ">
+            <a href="{% url 'home' %}"><img src="{% static 'logo.png' %}" alt="ReelView Logo" class="navbar-logo"></a>
+            <nav class="navbar-nav">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'catalog' %}" class="nav-link">Katalog</a>
+                <a href="{% url 'watchlist' request.user.username %}" class="nav-link">Watchlist</a>
+                <a href="{% url 'forum' %}" class="nav-link">Discussion</a>
+            </nav>
+            <div class="navbar-addon">
+                <div class="navbar-search">
+                    <i class="fa fa-search navbar-search-icon"></i>
+                    <form action="{% url 'catalog' %}" method="get">
+                        <input type="text" name="film" class="navbar-search-control" placeholder="Cari Film">
+                    </form>
+                </div>
+                <a href="{% url 'users' request.user.username %}" class="navbar-profile">
+                    <img src="{{ request.user.site_user.profile_picture.url }}" alt="Profil">
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <section class="section">
+            <div class="detail-header">
+                <a href="{% url 'users' user.username %}" class="detail-back">
+                    <i class="fa fa-share fa-flip-horizontal"></i>
+                </a>
+                <h2 class="detail-heading">Profil</h2>
+            </div>
+            <!-- Profile Card (Orang Lain) -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <img src="{{ user.site_user.profile_picture.url }}" alt="Profile Avatar" class="profile-avatar">
+                    <div class="profile-info">
+                        <div class="profile-row">
+                            <div>
+                                <span class="profile-label">Username</span><br> {{ user.username }}
+                            </div>
+                            <div>
+                                <span class="profile-label">Nama Lengkap</span><br>{{ user.first_name }} {{ user.last_name }}
+                            </div>
+                            <div>
+                                <span class="profile-label">Bergabung Sejak</span><br>{{ user.date_joined }}
+                            </div>
+                        </div>
+                        <div class="profile-bio">
+                            {{ siteuser.description }}
+                        </div>
+                    </div>
+                    <div class="profile-side">
+                        <a href="#" class="btn btn-primary"><i class="fa fa-comment"></i> Chat</a>
+                    </div>
+                </div>
+                <!-- Profile Stats -->
+                <div class="profile-stat-row">
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon"><i class="fa fa-heart"></i></span>
+                        <div class="profile-stat-wrap">
+                        <span class="profile-stat-count">{{ lenlist }} Film</span><br>
+                        <span class="profile-stat-label">Total WatchList</span>
+                        </div>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon"><i class="fa fa-comment-dots"></i></span>
+                        <div class="profile-stat-wrap">
+                        <span class="profile-stat-count">{{ lenreview }} Review</span><br>
+                        <span class="profile-stat-label">Total Review</span>
+                        </div>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon"><i class="fa fa-users"></i></span>
+                        <div class="profile-stat-wrap">
+                        <span class="profile-stat-count">2 Diskusi</span><br>
+                        <span class="profile-stat-label">Diskusi Diikuti</span>
+                        </div>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="profile-stat-icon"><i class="fa fa-dna"></i></span>
+                        <div class="profile-stat-wrap">
+                        <span class="profile-stat-count">{{ mode_tag }}</span><br>
+                        <span class="profile-stat-label">Genre Favorit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Watchlist Section -->
+        <section class="section">
+            <div class="section-title">WatchList</div>
+            <div class="card-row">
+                {% for wtags, wfilm, wratings in watchlist %}
+                    <div class="card">
+                        <img src="{{ wfilm.film.poster.url }}" alt="{{ wfilm.film.name }}" class="card-img">
+                        <div class="card-meta">
+                            <div class="card-genre">{% for tag in wtags %} {{ tag.name }} {% endfor %}</div>
+                            <div class="card-title">{{ wfilm.film.name }}</div>
+                            <div class="card-rating">
+                                <span class="card-rating-star"><i class="fa fa-star"></i></span>
+                                {{ wratings.0 }} <span class="card-ulasan">({{ wratings.1 }} Ulasan)</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+        
+        <!-- Last Review Section -->
+        <section class="section">
+            <div class="section-title">Last Review</div>
+            <!-- Review List -->
+            <div class="review-list">
+                {% for review in reviews %}
+                    <div class="review-card">
+                        <div class="review-profile">
+                            <img src="{{ review.site_user.profile_picture.url }}" alt="User">
+                        </div>
+                        <div class="review-content">
+                            <div class="review-header">
+                                <span class="review-user">@{{ review.site_user.user.username }} on {{ review.film.name }}</span>
+                            </div>
+                            <div class="review-text">
+                                {{ review.description }}
+                            </div>
+                            <div class="review-meta">
+                                {{ review.date }} &nbsp; <i class="fa fa-thumbs-up review-meta-like"></i> {{ review.liked }} suka
+                            </div>
+                            <div class="review-actions">
+                                <button class="review-action"><i class="fa fa-thumbs-up"></i></button>
+                                <button class="review-action"><i class="fa fa-comment"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <div class="footer-title">Eksplorasi</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'catalog' %}">Katalog Film</a></li>
+                        <li><a href="{% url 'home' %}">Rekomendasi Minggu Ini</a></li>
+                        <li><a href="{% url 'watchlist' user.username %}">Watchlist Saya</a></li>
+                        <li><a href="{% url 'forum' %}">Diskusi Film</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Akun</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'users' user.username %}">Profil Saya</a></li>
+                        <li><a href="./login.html">Login / Daftar</a></li>
+                        <li><a href="{./profile-other.html"}>Ulasan Saya</a></li>
+                        <li><a href="{% url 'users' user.username %}">Pengaturan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Bantuan</div>
+                    <ul class="footer-list">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Hubungi Kami</a></li>
+                        <li><a href="#">Kebijakan Privasi</a></li>
+                        <li><a href="#">Syarat & Ketentuan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-social-row">
+                        <a href="#" class="footer-social-link"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                    <a href="#" class="btn btn-outline-primary btn-footer">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="footer-copy">
+        <div class="container">
+            &copy; 2025 Reelview. Semua hak cipta dilindungi.
+        </div>
+    </div>
+</body>
+</html>

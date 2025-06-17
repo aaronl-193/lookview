@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Film - ReelView</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container container ">
+            <a href="{% url 'home' %}"><img src="{% static 'logo.png' %}" alt="ReelView Logo" class="navbar-logo"></a>
+            <nav class="navbar-nav">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'catalog' %}" class="nav-link active">Katalog</a>
+                <a href="{% url 'watchlist' request.user.username %}" class="nav-link">Watchlist</a>
+                <a href="{% url 'forum' %}" class="nav-link">Discussion</a>
+            </nav>
+            <div class="navbar-addon">
+                <div class="navbar-search">
+                    <i class="fa fa-search navbar-search-icon"></i>
+                    <form action="{% url 'catalog' %}" method="get">
+                        <input type="text" name="film" class="navbar-search-control" placeholder="Cari Film">
+                    </form>
+                </div>
+                <a href="{% url 'users' request.user.username %}" class="navbar-profile">
+                    <img src="{{ request.user.site_user.profile_picture.url }}" alt="Profil">
+                </a>
+            </div>
+        </div>
+    </header>
+    <!-- Hero Catalog -->
+    <section class="hero catalog-hero">
+        <img src="{% static 'bg-catalog.png' %}" class="hero-bg" alt="Hero BG">
+        <div class="catalog-hero-wrap">
+            <div class="container">
+                <h2 class="catalog-hero-title">Cari Rekomendasi Film Terbaik</h2>
+                <p class="catalog-hero-description">Ketik keyword film yang diinginkan atau eksplorasi sesuai kategori</p>
+                <form class="catalog-search-bar" action="{% url 'catalog' %}" method="get">
+                    <i class="fa fa-search catalog-search-bar-icon"></i>
+                    <input type="text" name="film" class="catalog-search-input" placeholder="Cari Film">
+                </form>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <!-- Filter & Sort -->
+        <div class="catalog-controls">
+            <div class="custom-select-wrapper">
+                <select class="custom-select">
+                    <option value="popular">Populer</option>
+                    <option value="rating">Rating tertinggi</option>
+                    <option value="newest">Terbaru</option>
+                </select>
+            </div>
+            <div class="filter-list">
+                <button class="btn btn-category active">All</button>
+                <button class="btn btn-category">Comedy</button>
+                <button class="btn btn-category">Action</button>
+                <button class="btn btn-category">Drama</button>
+                <button class="btn btn-category">Thriller</button>
+                <button class="btn btn-category">History</button>
+                <button class="btn btn-category">Family</button>
+                <button class="btn btn-category">Animasi</button>
+            </div>
+        </div>
+        <!-- Card Row -->
+        <div class="card-row">
+            {% for rating, tags, film, reviewed, wishlisted in films %}
+                <div class="card">
+                    <img src="{{ film.poster.url }}" alt="{{ film.name }}" class="card-img">
+                    <div class="card-meta">
+                        <div class="card-genre">{% for tag in tags %} {{ tag.name }} {% endfor %}</div>
+                        <div class="card-title">
+                            <a href={% url 'films' film.id %}>{{ film.name }}</a>
+                        </div>
+                        <div class="card-rating">
+                            <span class="card-rating-star"><i class="fa fa-star"></i></span>
+                            {{ rating.0 }} <span class="card-ulasan">({{ rating.1 }} Ulasan)</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        {% if reviewed %}
+                            <a class="btn btn-primary">Sudah Direview</a>
+                        {% else %}
+                            <a href="{% url 'review_film' film.id %}" class="btn btn-primary">Review</a>
+                        {% endif %}
+                        {% if wishlisted %}
+                            <form action="{% url 'watchlist' request.user.username %}" method="post">
+                                {% csrf_token %}
+                                <button name="film" value="{{ film.id }}" class="btn btn-outline-danger"><i class="fa fa-minus"></i> Kurangkan dari Watchlist</button>
+                            </form>
+                        {% else %}
+                            <form action="{% url 'watchlist' request.user.username %}" method="post">
+                                {% csrf_token %}
+                                <button name="film" value="{{ film.id }}" class="btn btn-outline-danger"><i class="fa fa-plus"></i> Tambahkan ke WatchList</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <div class="footer-title">Eksplorasi</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'catalog' %}">Katalog Film</a></li>
+                        <li><a href="{% url 'home' %}">Rekomendasi Minggu Ini</a></li>
+                        <li><a href="{% url 'watchlist' request.user.username %}">Watchlist Saya</a></li>
+                        <li><a href="{% url 'forum' %}">Diskusi Film</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Akun</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'users' request.user.username %}">Profil Saya</a></li>
+                        <li><a href="./login.html">Login / Daftar</a></li>
+                        <li><a href="{% url 'users_outside' request.user.username %}">Ulasan Saya</a></li>
+                        <li><a href="{% url 'users' request.user.username %}">Pengaturan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Bantuan</div>
+                    <ul class="footer-list">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Hubungi Kami</a></li>
+                        <li><a href="#">Kebijakan Privasi</a></li>
+                        <li><a href="#">Syarat & Ketentuan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-social-row">
+                        <a href="#" class="footer-social-link"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                    <a href="#" class="btn btn-outline-primary btn-footer">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="footer-copy">
+        <div class="container">
+            &copy; 2025 Reelview. Semua hak cipta dilindungi.
+        </div>
+    </div>
+</body>
+</html>

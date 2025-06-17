@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion - ReelView</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container container ">
+            <a href="{% url 'home' %}"><img src="{% static 'logo.png' %}" alt="ReelView Logo" class="navbar-logo"></a>
+            <nav class="navbar-nav">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'catalog' %}" class="nav-link">Katalog</a>
+                <a href="{% url 'watchlist' request.user.username %}" class="nav-link">Watchlist</a>
+                <a href="{% url 'forum' %}" class="nav-link active">Discussion</a>
+            </nav>
+            <div class="navbar-addon">
+                <div class="navbar-search">
+                    <i class="fa fa-search navbar-search-icon"></i>
+                    <form action="{% url 'catalog' %}" method="get">
+                        <input type="text" name="film" class="navbar-search-control" placeholder="Cari Film">
+                    </form>
+                </div>
+                <a href="{% url 'users' request.user.username %}" class="navbar-profile">
+                    <img src="{{ request.user.site_user.profile_picture.url }}" alt="Profil">
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <!-- Discussion Section -->
+        <section class="section">
+            <div class="section-title">
+                <span class="section-title-icon"><i class="fa fa-users"></i></span>
+                Fokus Diskusi
+            </div>
+        
+            {% for film in films %}
+                <div class="discussion-forum-card">
+                    <div class="discussion-forum-header">
+                        <img src="{{ film.0.poster.url }}" alt="Poster {{ film.0.name }}" class="forum-poster">
+                        <div class="forum-info">
+                            <div class="forum-title">Forum Diskusi Film {{ film.0.name }}</div>
+                        </div>
+                    </div>
+                    <!-- Chat Bubble -->
+                    <div class="discussion-chatbox">
+                        {% for chat in film.1 %}
+                            {% if chat.author.user != request.user %}
+                                <div class="discussion-chat-row">
+                                    <img src="{{ chat.author.profile_picture.url }}" alt="{{ chat.author.user.username }}" class="chat-avatar">
+                                    <div>
+                                        <div class="chat-user">{{ chat.author.user.username }}</div>
+                                        <div class="chat-bubble chat-bubble-left">{{ chat.content }}</div>
+                                        <div class="chat-time">{{ chat.comment_created }}</div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="discussion-chat-row discussion-chat-row-right">
+                                    <img src="{{ chat.author.profile_picture.url }}" alt="{{ chat.author.user.username }}" class="chat-avatar">
+                                    <div>
+                                        <div class="chat-user chat-user-right">{{ chat.author.user.username }}</div>
+                                        <div class="chat-bubble chat-bubble-right">{{ chat.content }}</div>
+                                        <div class="chat-time chat-time-right">{{ chat.comment_created }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <form action="{% url 'forum' %}" method="post">
+                            {% csrf_token %}
+                            <div class="discussion-chat-input">
+                                <input type="text" name="chat-input" placeholder="Ketik Sesuatu" class="chat-input">
+                                <input type="hidden" value="{{ film.0.id }}" name="film">
+                                <button class="chat-send-btn"><i class="fa fa-paper-plane"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+            
+        </section>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <div class="footer-title">Eksplorasi</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'catalog' %}">Katalog Film</a></li>
+                        <li><a href="{% url 'home' %}">Rekomendasi Minggu Ini</a></li>
+                        <li><a href="{% url 'watchlist' request.user.username %}">Watchlist Saya</a></li>
+                        <li><a href="{% url 'forum' %}">Diskusi Film</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Akun</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'users' request.user.username %}">Profil Saya</a></li>
+                        <li><a href="./login.html">Login / Daftar</a></li>
+                        <li><a href="{% url 'users_outside' request.user.username %}">Ulasan Saya</a></li>
+                        <li><a href="{% url 'users' request.user.username %}">Pengaturan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Bantuan</div>
+                    <ul class="footer-list">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Hubungi Kami</a></li>
+                        <li><a href="#">Kebijakan Privasi</a></li>
+                        <li><a href="#">Syarat & Ketentuan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-social-row">
+                        <a href="#" class="footer-social-link"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                    <a href="#" class="btn btn-outline-primary btn-footer">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="footer-copy">
+        <div class="container">
+            &copy; 2025 Reelview. Semua hak cipta dilindungi.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumbo (2025) - Review Film | ReelView</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container container ">
+            <a href="{% url 'home' %}"><img src="{% static 'logo.png' %}" alt="ReelView Logo" class="navbar-logo"></a>
+            <nav class="navbar-nav">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'catalog' %}" class="nav-link active">Katalog</a>
+                <a href="{% url 'watchlist' request.user.username %}" class="nav-link">Watchlist</a>
+                <a href="{% url 'forum' %}" class="nav-link">Discussion</a>
+            </nav>
+            <div class="navbar-addon">
+                <div class="navbar-search">
+                    <i class="fa fa-search navbar-search-icon"></i>
+                    <form action="{% url 'catalog' %}" method="get">
+                        <input type="text" name="film" class="navbar-search-control" placeholder="Cari Film">
+                    </form>
+                </div>
+                <a href="{% url 'users' request.user.username %}" class="navbar-profile">
+                    <img src="{{ request.user.site_user.profile_picture.url }}" alt="Profil">
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="detail-content">
+            <div class="detail-info">
+                <div class="detail-header">
+                    <a href="{% url 'catalog' %}" class="detail-back">
+                        <i class="fa fa-share fa-flip-horizontal"></i>
+                    </a>
+                    <h2 class="detail-heading">Review Film</h2>
+                </div>
+                <h1 class="detail-title">{{ film.name }}</h1>
+                <div class="detail-sinopsis">
+                    <span class="label">Sinopsis</span>
+                    <p>{{ film.description }}</p>
+                </div>
+                <div class="detail-tags">
+                    {% for tag in tags %} 
+                        <span class="btn btn-category">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                <div class="detail-table">
+                    <div class="detail-table-col">
+                        <div class="detail-table-row">
+                            <span class="detail-label">Durasi</span>
+                            <span class="detail-value">{{ film.duration }} Menit</span>
+                        </div>
+                        <div class="detail-table-row">
+                            <span class="detail-label">Rating</span>
+                            <span class="detail-value">{{ rating }} ({{ num_ratings }} Ulasan)</span>
+                        </div>
+                        <div class="detail-table-row">
+                            <span class="detail-label">Rating Film</span>
+                            <span class="detail-value">SU (Semua Umur)</span>
+                        </div>
+                        <div class="detail-table-row">
+                            <span class="detail-label">Tanggal Rilis</span>
+                            <span class="detail-value">{{ film.release_date }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-table-col">
+                        <div class="detail-table-row">
+                            <span class="detail-label">Sutradara</span>
+                            <span class="detail-value">{{ film.director }}</span>
+                        </div>
+                        <div class="detail-table-row">
+                            <span class="detail-label">Studio</span>
+                            <span class="detail-value">{{ film.studio }}</span>
+                        </div>
+                        <div class="detail-table-row">
+                            <span class="detail-label">Pengisi Suara</span>
+                            <span class="detail-value">{{ film.actors }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-poster">
+                <img src="{{ film.poster.url }}" alt="{{ film.name }}" class="detail-poster-img">
+            </div>
+        </div>
+    </div>
+    <div class="container">
+       <form action="{% url 'review_film' film.id %}" class="review-form" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="rating">Pilih Rating<span class="required">*</span></label>
+                <div class="star-rating" id="rating">
+                    <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 bintang"></label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 bintang"></label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 bintang"></label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 bintang"></label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 bintang"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="review">Masukkan Review<span class="required">*</span></label>
+                <textarea id="review" name="review-text" class="form-control" rows="5" placeholder="Tulis reviewmu di sini..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="upload">Upload Foto (Optional)</label>
+                <div class="upload-row">
+                    <label class="upload-btn">
+                        <input type="file" id="upload" class="form-upload" accept="image/*">
+                        <i class="fa fa-upload"></i> Upload Foto tambahan
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Kirim Review</button>
+        </form>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-row">
+                <div class="footer-col">
+                    <div class="footer-title">Eksplorasi</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'catalog' %}">Katalog Film</a></li>
+                        <li><a href="{% url 'home' %}">Rekomendasi Minggu Ini</a></li>
+                        <li><a href="{% url 'watchlist' request.user.username %}">Watchlist Saya</a></li>
+                        <li><a href="{% url 'forum' %}">Diskusi Film</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Akun</div>
+                    <ul class="footer-list">
+                        <li><a href="{% url 'users' request.user.username %}">Profil Saya</a></li>
+                        <li><a href="./login.html">Login / Daftar</a></li>
+                        <li><a href="{% url 'users_outside' request.user.username %}">Ulasan Saya</a></li>
+                        <li><a href="{% url 'users' request.user.username %}">Pengaturan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-title">Bantuan</div>
+                    <ul class="footer-list">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Hubungi Kami</a></li>
+                        <li><a href="#">Kebijakan Privasi</a></li>
+                        <li><a href="#">Syarat & Ketentuan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-social-row">
+                        <a href="#" class="footer-social-link"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-link"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                    <a href="#" class="btn btn-outline-primary btn-footer">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="footer-copy">
+        <div class="container">
+            &copy; 2025 Reelview. Semua hak cipta dilindungi.
+        </div>
+    </div>
+</body>
+</html>

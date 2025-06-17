@@ -1,0 +1,255 @@
+:root {
+    --color-primary: #17726D;
+    --color-danger: #FF0000;
+    --color-warning: #FF9000;
+    --color-border: #9393;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 14px;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: .2em 0;
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.page-auth {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    border-left: 40vh solid var(--color-primary);
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    max-width: 140vh;
+    margin: 0 auto;
+    height: 100vh;
+}
+
+.left-section {
+    position: relative;
+    width: 55%;
+    margin: 2rem;
+    overflow: hidden;
+    z-index: 9999;
+    margin-left: calc((40vh) * -1);
+}
+
+.left-section-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: #fff;
+    height: 100%;
+    padding: 2rem;
+    margin-right: 4rem;
+    z-index: 2;
+}
+
+.right-section {
+    width: 45%;
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-overlay {
+    left: 0;
+    top: 0;
+    position: absolute;
+    object-fit: cover;
+    z-index: 1;
+    height: 100%;
+}
+
+.social {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    gap: 2rem;
+    display: flex;
+    z-index: 2;
+}
+
+.social-link {
+    color: #fff;
+    height: auto;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.contact-btn {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.2s;
+}
+
+.contact-btn:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.welcome-text {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 2rem;
+    margin-left: 0;
+    max-width: 80%;
+}
+
+.welcome-title {
+    font-size: 2.6rem;
+    font-weight: 600;
+}
+
+.welcome-paragraph {
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.logo {
+    height: 4rem;
+    margin-bottom: 1rem;
+}
+
+.logo img {
+    height: 100%;
+}
+
+.form-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #000;
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.form-label span {
+    color: var(--color-danger);
+    margin-left: 0.2rem;
+}
+
+.form-control {
+    width: 100%;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1;
+    background: #f9f9f9;
+    transition: border 0.2s ease-in-out;
+    border: 1.5px solid var(--color-border);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: var(--color-primary);
+}
+
+.form-label-secondary {
+    color: var(--color-warning);
+    align-self: flex-end;
+    text-align: right;
+}
+
+.form-text {
+    font-size: 1rem;
+    margin-top: 1rem;
+    color: #8D8D8D;
+    text-align: center;
+    width: 100%;
+}
+
+.btn {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1;
+    background: #f9f9f9;
+    transition: border 0.2s ease-in-out;
+    border: 1.5px solid var(--color-border);
+    padding: 0.85rem 1rem;
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.btn:hover {
+    border-color: var(--color-primary);
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-lock {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: var(--color-warning);
+}
