@@ -19,6 +19,8 @@ def signup_view(request: http.HttpRequest, *args, **kwargs) -> HttpResponse:
         confirmation_pass: str = request.POST.get("confirm-password")
         if password != confirmation_pass:
             context["confirmation_failed"] = True
+        elif username in [user.username for user in models.User.objects.all()]:
+            context["confirmation_failed"] = True
         else:
             user: models.User = models.User.objects.create_user(
                 username=username,
